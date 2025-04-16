@@ -23,21 +23,7 @@ cd ~/ros2_ws
 colcon build --packages-select simple_boxbot_v1
 source install/setup.bash
 
-2. Visualize in RViz2 / RViz2 に表示
-
-# Start robot_state_publisher with URDF
-ros2 run robot_state_publisher robot_state_publisher \
-  --ros-args -p robot_description:="$(cat ~/ros2_ws/src/simple_boxbot_v1/urdf/simple_boxbot.urdf)"
-
-# Start joint_state_publisher_gui (optional)
-ros2 run joint_state_publisher_gui joint_state_publisher_gui
-
-# Start RViz
-rviz2
-📌 If nothing appears in RViz, try setting Fixed Frame to base_link.
-📌 RVizで何も表示されない場合は、「Fixed Frame」を base_link に変更してください。
-
-3. Spawn in Gazebo / Gazeboに表示
+2. Spawn in Gazebo / Gazeboに表示
 
 ros2 launch gazebo_ros gazebo.launch.py &
 ros2 run gazebo_ros spawn_entity.py \
