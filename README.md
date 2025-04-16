@@ -1,53 +1,64 @@
-# simple_boxbot_v1 開発ログまとめ（ChatGPT Canvasより）
+# simple_boxbot_v1
 
-このプロジェクトは、ROS 2 Humble + Gazebo環境で、単純な直方体モデルを表示し、将来的には動作制御も行えるように開発されたものです。
-
----
-
-## ✅ 最終的に成功したステップ
-- **URDF名**：`simple_boxbot.urdf`
-- **構成要素**：直方体1つ（`base_link`）のみを表示
-- **表示方法**：`robot_state_publisher` + `joint_state_publisher_gui` によるRViz表示およびGazebo表示の両方
-- **確認済**：RViz表示は`robot_description`が正しく配信されており、`fixed_frame`を`base_link`に設定
+A minimal URDF-based box-shaped robot for ROS 2 + Gazebo simulation.  
+ROS 2 や Gazebo シミュレーション用の、直方体ベースの最小URDFロボットです。
 
 ---
 
-## 🔁 開発中に遭遇した主なエラーと対処
+## 📦 Features / 特徴
 
-| 内容 | 対応策 |
-|------|--------|
-| `robot_state_publisher` の `robot_description` が空 or Node not found | `--ros-args -p robot_description:=...` を明示的に渡して起動 |
-| RVizでモデルが表示されない | Fixed Frame を `map` → `base_link` に変更（ただし変更後も未表示だった）|
-| Gazeboで `/spawn_entity` サービスが未起動 | `gazebo --verbose` で起動し、`gazebo_ros_factory` Pluginを確認 |
-| Gazeboの表示が遅い or 重い | 単一の直方体に絞ることで軽量化 |
+- ✅ Simple box-based URDF model （シンプルな直方体URDFモデル）
+- ✅ Compatible with Gazebo Classic and RViz2 （Gazebo・RViz2 両対応）
+- ✅ Easily extendable for joint control or simulation tasks  
+  （ジョイント制御や動作学習への拡張も容易）
 
 ---
 
-## 💡 今後の提案
+## 🚀 Quick Start / クイックスタート
 
-### ✅ A案（採用済）
-- **軽量なシンプル構成で再スタート**
-  - エラーの多い`example_4`や過去の残骸を一度クリーンアップ
-  - 表示成功したモデルをベースにステップアップ方式で開発を進行
-  - GitHubへのバックアップも実施済（`simple_boxbot_v1`）
+1. Build the package / パッケージのビルド
 
-### ❌ B案（見送り）
-- 複雑な既存exampleを元に再構築（エラーが頻発したため中断）
+```bash
+cd ~/ros2_ws
+colcon build --packages-select simple_boxbot_v1
+source install/setup.bash
 
----
+2. Visualize in RViz2 / RViz2 に表示
 
-## 🔗 参考Canvasログ一覧
-- https://chatgpt.com/canvas/shared/67f7d3d226548191b1ff8118d786c445
-- https://chatgpt.com/canvas/shared/67fdff415e2c81918b71d0fdcae3edbf
-- https://chatgpt.com/canvas/shared/67fe023f979c8191879c7528eeebd175
-- https://chatgpt.com/canvas/shared/67fdffa19bac819182c9d9e3d793850f
+# Start robot_state_publisher with URDF
+ros2 run robot_state_publisher robot_state_publisher \
+  --ros-args -p robot_description:="$(cat ~/ros2_ws/src/simple_boxbot_v1/urdf/simple_boxbot.urdf)"
 
----
+# Start joint_state_publisher_gui (optional)
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
 
-## 🗂️ GitHubリポジトリ
-- https://github.com/q121p/simple_boxbot_v1
+# Start RViz
+rviz2
+📌 If nothing appears in RViz, try setting Fixed Frame to base_link.
+📌 RVizで何も表示されない場合は、「Fixed Frame」を base_link に変更してください。
 
-READMEや開発者向けドキュメントにこの要約をそのまま記載してもOKです。
+3. Spawn in Gazebo / Gazeboに表示
 
-何か追加したい点があれば教えてください！
+ros2 launch gazebo_ros gazebo.launch.py &
+ros2 run gazebo_ros spawn_entity.py \
+  -entity simple_boxbot \
+  -file ~/ros2_ws/src/simple_boxbot_v1/urdf/simple_boxbot.urdf
+
+📁 Folder Structure / フォルダ構成
+
+simple_boxbot_v1/
+├── CMakeLists.txt
+├── package.xml
+├── launch/
+│   └── display.launch.py
+└── urdf/
+    └── simple_boxbot.urdf
+
+📖 License / ライセンス
+This project is licensed under the MIT License.
+このプロジェクトは MITライセンス で公開されています。
+
+
+Designed and tested with ROS 2 Humble on Ubuntu 22.04 + Gazebo Classic.
+動作確認環境：ROS 2 Humble + Ubuntu 22.04 + Gazebo Classic
 
